@@ -1,0 +1,45 @@
+{
+  "app_name": "JointSense AI",
+  "app_type": "hybrid_fullstack",
+  "context": "Healthcare AI Edge Screening for Osteoarthritis",
+  "archetype": "ORGANIC & EARTHY mixed with LUXURY LAVENDER",
+  "typography": {
+    "heading": "Plus Jakarta Sans / Outfit",
+    "body": "Inter / DM Sans",
+    "weights": ["300", "400", "500", "600", "700"],
+    "scaling": "Fluid scale with tight tracking on H1"
+  },
+  "colors": {
+    "primary": "#7C3AED",
+    "lavender_bg": "#F5F3FF",
+    "lavender_dark": "#1E1B4B",
+    "accent": "#8B5CF6",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444"
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-white/20 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]",
+    "borders": "1px subtle rounded-2xl",
+    "transitions": "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+  },
+  "grids": {
+    "dashboard_bento": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6",
+    "marketing_tetris": "grid-cols-1 md:grid-cols-12 gap-8"
+  },
+  "motion": {
+    "library": "framer-motion & CSS transitions",
+    "rules": "Respect prefers-reduced-motion, staggered entrance animations, interactive hover lift"
+  },
+  "accessibility": {
+    "contrast": "APCA and WCAG AA compliant (>4.5:1 text, >3:1 UI)",
+    "attributes": "all interactive elements include data-testid attributes"
+  },
+  "media": {
+    "hero_image": "https://images.unsplash.com/photo-1764314484083-cbd0de7e512c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxwaHlzaW90aGVyYXB5JTIwY2xpbmljJTIwbWVkaWNhbCUyMGNhcmUlMjBqb2ludCUyMGhlYWx0aHxlbnwwfHx8fDE3OTA0MTUzNzl8MA&ixlib=rb-4.1.0&q=85",
+    "elderly_patient": "https://images.unsplash.com/photo-1666639106747-5549f30c8885?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NjA1MTN8MHwxfHNlYXJjaHwyfHxlZGRlcmx5JTIwbW9iaWxpdHklMjB3ZWxsbmVzcyUyMHBoeXNpb3RoZXJhcHklMjBJbmRpYXxlbnwwfHx8fDE3OTA0MTUzNzZ8MA&ixlib=rb-4.1.0&q=85",
+    "physio_session": "https://images.unsplash.com/photo-1764314138160-5f04f4a50dae?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwaHlzaW90aGVyYXB5JTIwY2xpbmljJTIwbWVkaWNhbCUyMGNhcmUlMjBqb2ludCUyMGhlYWx0aHxlbnwwfHx8fDE3OTA0MTUzNzl8MA&ixlib=rb-4.1.0&q=85"
+  },
+  "component_path": "/app/frontend/src/components",
+  "instructions_to_main_agent": "Implement full-stack React frontend & FastAPI backend with authentication, 7-language localization, clinician dashboard, KOS questionnaire with affected leg and duration, interactive sensor tests (2-min walking & 30-sec sit-to-stand) with real-time simulator values, hardware adapter boundary for Raspberry Pi/ESP32, 40/60 risk score formula, SHAP explanation, detailed PDF/report export, and gorgeous lavender/purple light & dark themes."
+}

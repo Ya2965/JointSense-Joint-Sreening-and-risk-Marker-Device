@@ -1,0 +1,27 @@
+{
+  "summary": "Verified real TreeSHAP output on /api/assessment/stop and the new /api/assessments/{id}/pdf endpoint. All 10 pytest cases pass, covering SHAP shape/values, non-hardcoded contributions, TreeSHAP-mentioning explanation, score consistency (final = round(koos*0.4 + movement*0.6, 1)), PDF magic bytes and Content-Type/Content-Disposition, 404 on unknown id, 401 without token, and 404 on cross-workspace access.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/assessment/start|stop", "issue": "assessment_states is still an in-memory per-user dict; running tests with pytest-xdist in parallel on the same clinician account races (start of one worker deactivates the other). Test file works around this via xdist_group + --dist=loadgroup, but the underlying single-process, single-active-assessment-per-user limitation from iteration 1 is unresolved."},
+      {"endpoint": "/api/assessments/{id}/pdf", "issue": "Cross-workspace access returns 404 (as spec'd), which correctly hides existence, but the PDF route does not enforce owner_id on the screenings lookup itself — access control is derived only from the patient lookup. Same-workspace clinicians sharing a patient (future multi-tenant scenario) would still fetch each other's reports. Acceptable for current single-owner model."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_shap_and_pdf.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py is single-file ~382 lines — still fine, but stop_assessment is doing a lot: consider extracting scoring + persistence.",
+    "model_explanation swallows all SHAP exceptions into shap_status='unavailable' with no logging — a silent regression would be invisible.",
+    "PDF endpoint loads full model+shap on every request via stop path but PDF itself uses stored screening — good. However build_pdf has no size cap and could be slow for many features; fine for current fixed feature set.",
+    "assessment_states dict is process-global and not scaled — flagged again from iteration 1."
+  ],
+  "updated_files": ["/app/backend/tests/test_shap_and_pdf.py", "/app/test_reports/iteration_2.json", "/app/test_reports/pytest/pytest_results.xml"],
+  "success_rate": {"backend": "100%", "frontend": "not tested (backend-only per request)"},
+  "test_credentials": "Used doctor1@jointsense.local / JointSense123! (from /app/memory/test_credentials.md). Also registered ephemeral second clinician for cross-workspace isolation test.",
+  "seed_data_creation": "Created one TEST_ShapPatient and one screening on the demo clinician account per pytest run (module-scoped fixtures, no delete endpoints available).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Real TreeSHAP + PDF endpoint verified end-to-end against the public REACT_APP_BACKEND_URL. Test file /app/backend/tests/test_shap_and_pdf.py uses xdist_group to run serially — invoke with `pytest --dist=loadgroup` or without -n. Sample SHAP contribution example seen: contribution values change per run and do not match old hardcoded (0.24, 0.18, 0.13) triple. PDF sample size ~5-8KB, magic bytes '%PDF-' confirmed.",
+  "rca of the issue": "N/A — nothing failed. Note: prior iteration 1 issue about shared assessment_states remains and manifested when pytest-xdist parallelised the SHAP+PDF classes on the same user; the test file now pins them to a single xdist worker group."
+}

@@ -1,0 +1,42 @@
+{
+  "summary": "JointSense v2 iteration verified end-to-end. Backend: 13/13 pytest passing on /app/backend/tests/test_v2_features.py covering /hw/ingest valid+401, hardware/simulator source switching (fresh vs stale), leg-abduction test with 30s duration and monotonically decreasing remaining_seconds + real SHAP on stop, /settings GET/PUT persistence with 422 on invalid hardware_mode, /screenings/{id} owner-only (200/401/404 cross-workspace), patient latest_risk_level/score/screened_at populated after screening, and PDF larger with clinic + signature set. Frontend: Overview and Patients are now distinct pages, forbidden copy ('simulator', 'Demo mode', 'simulator pipeline', 'simulator stream') is absent on Welcome/Overview/Patients/Assessment/Settings, three test cards (2:00, 0:30, 0:30) render, hint banner shows before 7 answered and disappears after, Start button label switches from 'Answer all 7 questions first' (disabled) to 'Start …' (enabled), timer counts down live (0:30 -> 0:29 observed), settings save shows green 'Saved' toast, risk pills render (14 pills counted on Patients).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/assessment/*", "issue": "assessment_states is still an in-memory per-user dict; pytest.ini defaults to -n 2 --dist loadscope. This test file uses xdist_group('v2_serial') but xdist_group is only honoured with --dist=loadgroup, so under the shipped -n 2 config concurrent workers race on start/stop. Ran successfully with -n 0. Same limitation flagged in iteration_1 and iteration_2."},
+      {"endpoint": "/api/hw/ingest", "issue": "HW_STATE is a single process-global dict (no per-user/per-device scoping). Any authenticated clinician in hardware mode will read the last-ingested reading regardless of device origin — fine for single-tenant demo, not multi-tenant."},
+      {"endpoint": "/api/screenings/{id}", "issue": "Owner check derived only from the patient lookup (screenings collection is not filtered by owner_id). Correct today because each patient has exactly one owner, but fragile if patient sharing is introduced later. Same pattern as PDF endpoint."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v2_features.py",
+    "/app/test_reports/pytest/v2_results.xml"
+  ],
+  "action_items": [
+    "Optional: for CI, invoke the v2 suite with `pytest -n 0 backend/tests/test_v2_features.py` OR migrate pytest.ini to `--dist=loadgroup` so xdist_group('v2_serial') is honoured. Under the shipped `-n 2 --dist loadscope`, tests race on the shared HW_STATE / assessment_states / settings for doctor1.",
+    "Consider filtering /api/screenings/{id} and /api/assessments/{id}/pdf directly by owner_id in the screenings query (defence in depth) instead of relying on the patient lookup."
+  ],
+  "critical_code_review_comments": [
+    "server.py has grown to 473 lines and stop_assessment/build_pdf are heavy — extract scoring, PDF, and settings into modules before adding more features.",
+    "HW_STATE and assessment_states are process-global (module-level) dicts — will not survive backend restart and are not safe under multi-worker gunicorn/uvicorn. Move to MongoDB or Redis before real ESP32 rollout.",
+    "resolve_features silently falls back to make_features(0, test) when hardware is stale; consumers only see stale=true. Frontend should surface a visible 'Waiting for edge device' warning during live capture (currently only shown on the Settings device-status pill).",
+    "model_explanation still swallows every shap exception into shap_status='unavailable' with no logging (flagged in iter 2, unchanged).",
+    "SettingsInput uses regex pattern for hardware_mode — good. Consider Literal['simulator','hardware'] for a cleaner Pydantic v2 idiom and clearer 422 message."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v2_features.py",
+    "/app/test_reports/pytest/v2_results.xml",
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% of scripted checks"},
+  "test_credentials": "doctor1@jointsense.local / JointSense123! (from /app/memory/test_credentials.md). HW_INGEST_KEY read from backend/.env (jointsense-esp32-DEMO-key-change-me).",
+  "seed_data_creation": "One TEST_V2Patient patient + several screenings on doctor1's workspace per pytest run; one ephemeral second clinician registered for cross-workspace isolation test; one TEST UI Patient may exist on the workspace from the Playwright flow.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "New v2 pytest module lives at /app/backend/tests/test_v2_features.py. Must be run with `-n 0` (or the pytest.ini switched to --dist=loadgroup) because it mutates shared per-user state (hardware_mode setting, assessment_states, HW_STATE). Existing SHAP+PDF tests in test_shap_and_pdf.py still pass. Frontend forbidden-copy assertion covers ['simulator','Demo mode','simulator pipeline','simulator stream'] — extend that list if product removes more phrases. Timer observed transitioning 0:30 -> 0:29 within 2s for sit-to-stand. Live source flip works: PUT /api/settings hardware_mode=hardware -> POST /hw/ingest -> GET /assessment/live returns source='hardware',stale=false with the exact ingested gait_speed."
+}

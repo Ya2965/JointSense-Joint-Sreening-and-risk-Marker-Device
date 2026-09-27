@@ -1,0 +1,39 @@
+{
+  "summary": "Iter5 fully verified. Backend: 10/10 new tests pass (BMI range guard rejects 500/10/1000/5 with HTTP 422; accepts 170/70 with 200; PDF no longer contains 'Assessed knee' or 'Model confidence'; PDF contains 'Screening trend' section with the last-3 integer combined_scores; single-screening PDF contains trend section and either score or 'this screening' caption; 'Score composition' + TreeSHAP retained). Regression: 18/18 from test_v2_features.py + test_iter4_features.py still pass (updated iter4 PDF assertion to drop the now-intentionally-removed 'Assessed knee' string). Total 28/28 backend passing. Frontend Playwright: sidebar-toggle removes .sidebar from DOM, persists via localStorage jointsense_sidebar across reload, and re-adds on toggle back; timer-block width EQ 280px and enclosing .sensor-panel width EQ 545.17px across 3 samples 1s apart during an active 2-min walk (no shifting); Results page for TEST_Iter5Trend3 shows no .confidence-card element and no 'Model confidence'/'Random Forest probability' text, Clinical note card + 6 SHAP bars still render.",
+  "backend_issues": {"critical": [], "minor": [
+    {"endpoint": "/api/patients", "issue": "PatientInput uses Field(ge=40,le=250) / Field(ge=10,le=350) which returns FastAPI's default 422; error body is the standard Pydantic list, no custom human message. Consider a friendly detail string for the UI to surface (currently UI only shows raw error)."}
+  ]},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iter5_features.py",
+    "/app/backend/tests/test_iter4_features.py",
+    "/app/backend/tests/test_v2_features.py",
+    "/app/test_reports/pytest/iter5_results.xml",
+    "/app/test_reports/pytest/regression_results.xml"
+  ],
+  "action_items": [
+    "server.py is now 672 lines. build_pdf + the 3 chart helpers (_shap_chart/_split_chart/_trend_chart) plus PatientInput and screening flow all live in one file. Time to split: move build_pdf + chart helpers into /app/backend/pdf.py and FEATURE_META + scoring into /app/backend/scoring.py before the next iteration.",
+    "Consider surfacing the 422 range-guard message in the New-Patient form (currently frontend shows the raw Pydantic error blob; a mapped 'Height must be between 40 and 250 cm' would be better UX)."
+  ],
+  "critical_code_review_comments": [
+    "PatientInput now correctly guards height_cm (40-250) and weight_kg (10-350) — good.",
+    "PDF trend chart is served last-3 scores in chronological order (backend query .sort('created_at', 1) then [-3:]) — correct.",
+    "Sidebar toggle uses localStorage 'jointsense_sidebar' with '1'/'0' and default true; state fully persists across reload — correct.",
+    "App.css appends .timer-block width 280px + .timer tabular-nums — verified pixel-stable during a live 2-minute-walk (widths were 280/280/280 across 3 samples 1s apart).",
+    "server.py at 672 lines is the largest file in the repo — modularise into pdf.py / scoring.py before iter6."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter5_features.py (new)",
+    "/app/backend/tests/test_iter4_features.py (removed 'Assessed knee' from PDF-content assertion — intentional per iter5 spec)",
+    "/app/test_reports/pytest/iter5_results.xml",
+    "/app/test_reports/pytest/regression_results.xml",
+    "/app/test_reports/iteration_5.json"
+  ],
+  "success_rate": {"backend": "100% (28/28: 10 iter5 + 18 regression)", "frontend": "100% (sidebar-toggle+persistence, timer-block pixel-stable, Results confidence removed, SHAP + clinical note retained)"},
+  "test_credentials": "doctor1@jointsense.local / JointSense123! (from /app/memory/test_credentials.md). HW_INGEST_KEY = jointsense-esp32-DEMO-key-change-me.",
+  "seed_data_creation": "TEST_Iter5BadHeightHi/Lo, TEST_Iter5BadWeightHi/Lo (all rejected 422 — not created), TEST_Iter5GoodAnthro, TEST_Iter5Trend3 (3 screenings), TEST_Iter5Trend1 (1 screening), TEST_Iter5UI (via Playwright, in-flight during test). All existing iter4/v2 seed patients preserved.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run backend suite with `-n 0`: pytest backend/tests/test_v2_features.py backend/tests/test_iter4_features.py backend/tests/test_iter5_features.py -n 0. Export REACT_APP_BACKEND_URL from frontend/.env first. Iter5 changes: (1) PatientInput range guard (ge/le) → 422; (2) build_pdf signature now takes history_scores; (3) _body_diagram removed, _shap_chart/_split_chart/_trend_chart added; (4) 'Model confidence' row deleted from summary_rows and confidence-card removed from Results side-stack in App.js; (5) Sidebar mounts only when sidebarOpen state true, floating .sidebar-toggle rendered inside .workspace-main. localStorage key = 'jointsense_sidebar'. (6) .timer-block CSS now hard-locked to 280px + tabular-nums on .timer.",
+  "rca of the issue": "No blocking bugs found this iteration. One test-only edit was necessary: test_iter4_features.py::TestPdfRichContent asserted 'Assessed knee' present in PDF text — that string was intentionally removed for iter5 (body-diagram legend deleted), so the assertion list was trimmed to ['25.9', 'Clinical interpretation', 'Sensor features']. This aligns the regression test with the new iter5 spec."
+}

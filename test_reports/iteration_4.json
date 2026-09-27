@@ -1,0 +1,38 @@
+{
+  "summary": "Iter4 (bug+feature batch): 18/18 backend pytest passing (test_v2_features.py 12/12 after adjusting stale-hardware test to new spec + new test_iter4_features.py 5/5). Frontend Playwright end-to-end verified: New Patient BMI chip renders 25.9 for 162cm/68kg, notes textarea persists to patient profile (data-testid='patient-notes-block'), anthro-row rendered on profile. 2-min walk timer counts smoothly and strictly monotonically decreases (120 -> 119 -> 118 across 1s samples via data-testid='timer-display'). 30s leg-abduction Save button no longer sticks — after clicking Save the movement-stop-button disappears and flow advances. PDF now contains 'Assessed knee', 'Clinical interpretation', 'Sensor features' and BMI value '25.9', size > 7000 bytes. Hardware auto-fallback verified: with hardware_mode=hardware and stale (>4s) /hw/ingest, /assessment/live returns source='simulator', stale=true, non-zero features varying between polls; after fresh /hw/ingest the very next /assessment/live returns source='hardware', stale=false with features EXACTLY matching payload. Leg-abduction end-to-end + duplicate stop returns 409 as intended.",
+  "backend_issues": {"critical": [], "minor": [
+    {"endpoint": "/api/assessment/*", "issue": "assessment_states/HW_STATE still process-global; pytest -n 2 --dist loadscope (shipped pytest.ini) races on shared state — must run with -n 0 (documented in previous iterations)."},
+    {"endpoint": "/api/hw/ingest", "issue": "HW_STATE still a single process-wide dict — no per-device scoping (unchanged from iter3, acceptable for single-tenant demo)."}
+  ]},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_v2_features.py",
+    "/app/backend/tests/test_iter4_features.py",
+    "/app/test_reports/pytest/iter4_results.xml",
+    "/app/test_reports/pytest/v2_results.xml"
+  ],
+  "action_items": [
+    "None blocking. Consider running the pytest suite with -n 0 in CI (already documented). File size /app/backend/server.py now 586 lines — start modularising build_pdf/FEATURE_META and scoring before adding further PDF sections."
+  ],
+  "critical_code_review_comments": [
+    "server.py now 586 lines (up from 473). build_pdf keeps growing (BMI, body diagram, clinical interpretation, feature meta table). Extract pdf.py + scoring.py before next iteration.",
+    "resolve_features silently downgrades hardware -> simulator when stale. UI must show 'Waiting for edge device' toast during live capture (currently only Settings device pill reflects this).",
+    "Client-side smooth timer in LiveStage seeds from Date.now() at start — good; but auto-finish and the Save button still both call stop; finishing guard is the correct fix (verified — no 'stuck on active' repro).",
+    "PatientInput accepts height_cm/weight_kg as Optional[float] with no range validation server-side (only frontend min/max). Consider Pydantic Field constraints to reject physically-impossible values (e.g., height_cm > 250 or < 40).",
+    "HW_STATE and assessment_states still module-globals — will not survive backend restart; unchanged from previous iterations."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v2_features.py",
+    "/app/backend/tests/test_iter4_features.py",
+    "/app/test_reports/pytest/v2_results.xml",
+    "/app/test_reports/pytest/iter4_results.xml",
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": {"backend": "100% (18/18 across v2 + iter4)", "frontend": "100% (BMI chip, notes block, monotonic timer, leg-abduction save)"},
+  "test_credentials": "doctor1@jointsense.local / JointSense123! (from /app/memory/test_credentials.md). HW_INGEST_KEY = jointsense-esp32-DEMO-key-change-me.",
+  "seed_data_creation": "TEST_Iter4Anthro, TEST_Iter4NoAnthro, TEST_Iter4PDF, TEST_Iter4Fallback, TEST_Iter4LegAbd, TEST_Iter4UIPatient patients created on doctor1's workspace, each with 1+ screenings. Existing TEST_V2Patient re-used.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend tests MUST run with `-n 0` because of xdist_group + shared assessment/HW state (pytest -n 0 backend/tests/test_iter4_features.py backend/tests/test_v2_features.py). Backend URL for tests must be exported: REACT_APP_BACKEND_URL='https://arthritis-edge.preview.emergentagent.com'. The stale-hardware test in test_v2_features.py was RENAMED and REWRITTEN to match new auto-fallback spec (source='simulator', stale=true when >4s idle). Iter4 additions: patient height_cm/weight_kg/notes stored, PDF has 'Assessed knee' / 'Clinical interpretation' / 'Sensor features' + BMI ('25.9'). Frontend data-testids added: patient-bmi-chip, patient-height-input, patient-weight-input, patient-notes-input, patient-notes-block, anthro-row. Duplicate /assessment/stop returns 409 (verified).",
+  "rca of the issue": "No blocking bugs found. The one initial pytest failure was in the pre-existing test 'test_hardware_stale_returns_baseline' which asserted the OLD behaviour (source='hardware' when stale). The new product spec (iter4) is to auto-fallback to simulator features when the last /hw/ingest is >4s stale — so the test was updated to assert source='simulator', stale=true, features vary between polls, and features do NOT equal the last stale payload."
+}
