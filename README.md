@@ -1,4 +1,4 @@
-# Here are your Instructions
+
 # JointSense — Joint Screening and Risk Marker Device
 
 JointSense is an integrated medical-tech application designed for non-invasive joint screening, mobility assessment, and biomechanical risk marker detection.
@@ -17,4 +17,16 @@ app/
 ├── auth_testing.md     # Authentication test documentation
 ├── design_guidelines.json # UI/UX design tokens and layout configs
 └── README.md           # Project documentation
+
+## ⚙️ Backend Setup & Configuration
+
+The JointSense backend is built with Python. Follow the steps below to configure and launch the API server locally:
+
+### 1. Prerequisites
+- **Python 3.9+** installed on your system
+- `pip` package manager
+
+### 2. Navigate to Backend Directory
+```bash
+cd backend
 
