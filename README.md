@@ -24,7 +24,7 @@ JointSense is a wearable multi-sensor kit that captures gait, joint vibration, a
 | 🧪 Test reports | Pytest and end-to-end test results | [`test_reports/`](test_reports/) |
 | 📝 Product requirements | PRD, architecture decisions, backlog | [`memory/PRD.md`](memory/PRD.md) |
 
-> **Note:** the BOM, pinout, docs and validation files are currently placeholders and are being filled in. Each link above will show the latest content as it is added.
+
 
 ---
 
