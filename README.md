@@ -16,7 +16,7 @@ JointSense is a wearable multi-sensor kit that captures gait, joint vibration, a
 | 📚 Docs & references | Project documentation and research references | [`docs/`](docs/references) |
 | ✅ Validation | Validation protocols and datasets | [`validation/`](validation/data) |
 | 🔧 Hardware | Hardware folder (BOM, pinout) | [`hardware/`](hardware/) |
-| 🧾 Bill of Materials | Components, specifications and costs | [`hardware/BOM and specifications`](hardware/BOM%20and%20specifications) |
+| 🧾 Bill of Materials | Components, specifications and costs | [`hardware/BOM_and_specifications`](hardware/BOM_and_specifications) |
 | 📌 Pinout reference | ESP32 / sensor wiring and pin assignments | [`hardware/pinout reference`](hardware/pinout%20reference) |
 | 🧠 Firmware | ESP32 firmware (dual BMI270 knee-angle test) | [`firmware/main.ino`](firmware/main.ino) |
 | 🖥️ Backend API | FastAPI server, ML model, PDF reports | [`backend/`](backend/) |
