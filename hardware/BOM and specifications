@@ -3,7 +3,7 @@
 **Project:** AI-Assisted Early Detection System for Osteoarthritis Risk Markers  
 **System:** JointSense  
 **Document:** Bill of Materials  
-**Version:** 1.1
+**Version:** 1.4  
 **Currency:** INR (₹)  
 **Market:** India
 
@@ -62,7 +62,7 @@
 
 ---
 
-# 5. Complete BOM
+## 5. Complete BOM
 
 | No. | Component | Specification / Model | Qty. | Unit Price (₹) | Total (₹) |
 |---:|---|---|---:|---:|---:|
@@ -86,7 +86,7 @@
 
 ---
 
-# 6. Cost Summary
+## 6. Cost Summary
 
 | Category | Cost (₹) |
 |---|---:|
@@ -96,13 +96,13 @@
 | Mechanical Components | 250 |
 | **TOTAL ESTIMATED BOM COST** | **₹14,710.17** |
 
-### Approximate Prototype BOM Cost: **₹14,710**
+### Approximate Prototype BOM Cost: ₹14,710
 
-### Recommended Procurement Budget: **₹15,000**
+### Recommended Procurement Budget: ₹15,000
 
 ---
 
-# 7. Essential Components
+## 7. Essential Components
 
 | Component | Qty. | Required |
 |---|---:|:---:|
@@ -123,9 +123,7 @@
 
 ---
 
-# 8. Components Excluded for Cost Reduction
-
-The following components are intentionally excluded from the minimum prototype BOM.
+## 8. Components Excluded for Cost Reduction
 
 | Component | Reason |
 |---|---|
@@ -144,9 +142,9 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-# 9. Component Specifications
+## 9. Component Specifications
 
-## 9.1 ESP32 DevKit V1
+### 9.1 ESP32 DevKit V1
 
 | Parameter | Specification |
 |---|---|
@@ -163,7 +161,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.2 Raspberry Pi 3 Model B
+### 9.2 Raspberry Pi 3 Model B
 
 | Parameter | Specification |
 |---|---|
@@ -181,7 +179,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.3 BMI270
+### 9.3 BMI270
 
 | Parameter | Specification |
 |---|---|
@@ -195,7 +193,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.4 FSR-402
+### 9.4 FSR-402
 
 | Parameter | Specification |
 |---|---|
@@ -209,7 +207,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.5 ADS1115
+### 9.5 ADS1115
 
 | Parameter | Specification |
 |---|---|
@@ -223,7 +221,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.6 CM-01B
+### 9.6 CM-01B
 
 | Parameter | Specification |
 |---|---|
@@ -242,7 +240,7 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-## 9.7 OPA1652
+### 9.7 OPA1652
 
 | Parameter | Specification |
 |---|---|
@@ -254,26 +252,53 @@ The following components are intentionally excluded from the minimum prototype B
 
 ---
 
-# 10. Minimum Procurement List
+## 10. Minimum Procurement List
 
-```text
-1 × ESP32 DevKit V1
-1 × Raspberry Pi 3 Model B
-
-2 × BMI270
-4 × FSR-402
-1 × ADS1115
-1 × CM-01B
-1 × OPA1652
-
-1 × Precision resistor set
-1 × Capacitor set
-1 × Rectifier component set
-
-1 × Flexible wire set
-1 × Pin-header / connector set
-1 × Heat-shrink tubing
-1 × Prototype PCB
-
-1 × Insole base
+1 × ESP32 DevKit V1  
+1 × Raspberry Pi 3 Model B  
+2 × BMI270  
+4 × FSR-402  
+1 × ADS1115  
+1 × CM-01B  
+1 × OPA1652  
+1 × Precision resistor set  
+1 × Capacitor set  
+1 × Rectifier component set  
+1 × Flexible wire set  
+1 × Pin-header / connector set  
+1 × Heat-shrink tubing  
+1 × Prototype PCB  
+1 × Insole base  
 2 × IMU mounting straps
+
+---
+
+## 11. Final Estimated Cost
+
+| Item | Amount |
+|---|---:|
+| Core Electronics | ₹13,930.17 |
+| Analog Components | ₹200 |
+| Wiring and Assembly | ₹330 |
+| Mechanical Components | ₹250 |
+| **TOTAL** | **₹14,710.17** |
+| **Rounded Project BOM** | **₹14,710** |
+| **Recommended Procurement Budget** | **₹15,000** |
+
+---
+
+## 12. Price Reference Notes
+
+- **CM-01B:** ₹7,704.17 for one unit from Element14 India.
+- **BMI270:** ₹501 per unit used as the project procurement estimate.
+- **ADS1115:** ₹130 per module as the selected procurement price.
+- **FSR-402:** ₹183 per sensor used as the project procurement estimate.
+- **Raspberry Pi 3 Model B:** ₹3,699 used as the project budget figure.
+- **OPA1652:** ₹243 used as the project budget figure.
+
+---
+
+**File:** `docs/BOM.md`  
+**Project:** JointSense  
+**Version:** 1.4  
+**Estimated Prototype Cost:** **₹14,710**
